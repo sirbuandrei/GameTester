@@ -30,16 +30,6 @@
 /processorParam:TextureFormat=Color
 /build:background_blocks.png
 
-#begin Map/FinalMap.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:Map/FinalMap.tmx
-
-#begin Map/Map.version2.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:Map/Map.version2.tmx
-
 #begin Player/BlueCharacter.png
 /importer:TextureImporter
 /processor:TextureProcessor
