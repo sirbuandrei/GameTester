@@ -44,6 +44,8 @@ namespace GameTester
             camera = new Camera(GraphicsDevice.Viewport);
             player = new Player(new Vector2(256, 400), "Default", Content);
 
+            
+
             base.Initialize();
         }
 
