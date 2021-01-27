@@ -18,8 +18,8 @@ namespace GameTester
 
         private int windowHeight = 512, windowWidth = 512;
 
-        public TiledMap tiledMap;
-        private TiledMapRenderer tiledMapRenderer;
+        // public TiledMap tiledMap;
+        // private TiledMapRenderer tiledMapRenderer;
 
         public KeyboardState keyboardState, previousKeyBoardState;
 
@@ -50,8 +50,8 @@ namespace GameTester
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            tiledMap = Content.Load<TiledMap>(@"Map\FinalMap");
-            tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, tiledMap);
+            // tiledMap = Content.Load<TiledMap>(@"Map\FinalMap");
+            // tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, tiledMap);
             background = Content.Load<Texture2D>("background_blocks");
         }
 
@@ -61,7 +61,7 @@ namespace GameTester
             keyboardState = Keyboard.GetState();
 
             player.Update(gameTime, keyboardState);
-            tiledMapRenderer.Update(gameTime);
+            // tiledMapRenderer.Update(gameTime);
             camera.Update(player, background.Width, background.Height);
 
             base.Update(gameTime);
