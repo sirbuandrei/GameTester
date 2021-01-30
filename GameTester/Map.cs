@@ -73,7 +73,7 @@ namespace GameTester
                 if(node.Name == "tile")
                 {
                     List<Vector> collisionPoints = new List<Vector>();
-                    int iD = Int32.Parse(node.Attributes["id"].Value);
+                    int iD = Int32.Parse(node.Attributes["id"].Value) + 1;
 
                     foreach (XmlNode objGroup in node.ChildNodes)
                     {
@@ -90,12 +90,15 @@ namespace GameTester
 
                                 foreach(Tile tile in layers[layers.Count - 1].tiles)
                                 {
+                                    collisionPoints.Clear();
+
                                     if(tile.iD == iD)
                                     {
                                         collisionPoints.Add(new Vector(xStart + tile.position.X, yStart + tile.position.Y));
                                         collisionPoints.Add(new Vector(xStart + tile.position.X + width, yStart + tile.position.Y));
                                         collisionPoints.Add(new Vector(xStart + tile.position.X + width, yStart + tile.position.Y + height));
                                         collisionPoints.Add(new Vector(xStart + tile.position.X, yStart + tile.position.Y + height));
+                                        
                                         Collision collision = new Collision(iD, collisionPoints);
                                         collisions.Add(collision);
                                     }
@@ -115,6 +118,8 @@ namespace GameTester
 
                                 foreach(Tile tile in layers[layers.Count - 1].tiles)
                                 {
+                                    collisionPoints.Clear();
+
                                     if(tile.iD == iD)
                                     {
                                         foreach(Vector pointToAdd in pointsToAdd)

@@ -12,6 +12,8 @@ namespace GameTester
     public class Player
     {
         public float velocity = 1f;
+        public Vector velocityVector;
+        public Polygon hitbox;
         public Vector2 position;
         Dictionary<string, Animation> animationDictionary;
         public AnimationManager animationManager;
@@ -27,6 +29,8 @@ namespace GameTester
                 {"WalkLeft", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkLeft"), 3)},
             };
             animationManager = new AnimationManager(animationDictionary.First().Value);
+
+            UpdateHitBox();
         }
 
         public void Move(KeyboardState keyboardState)
@@ -53,6 +57,8 @@ namespace GameTester
             }
             else
                 animationManager.Stop();
+
+            UpdateHitBox();
         }
 
         public void Update(GameTime gameTime, KeyboardState keyboardState)
@@ -64,6 +70,32 @@ namespace GameTester
         public void Draw(SpriteBatch spriteBatch)
         {
             animationManager.Draw(spriteBatch, position);
+        }
+
+        public void Translate(Vector t)
+        {
+            position.X += t.X;
+            position.Y += t.Y;
+
+            UpdateHitBox();
+        }
+
+        private void UpdateHitBox()
+        {
+            Polygon p = new Polygon();
+
+            float X = (float) 3.3125;
+            float Y = (float) 12.25;
+            float W = (float) 10.125;
+            float H = (float) 3.6875;
+
+            p.Points.Add(new Vector(X, Y));
+            p.Points.Add(new Vector(X + W, Y));
+            p.Points.Add(new Vector(X + W, Y + H));
+            p.Points.Add(new Vector(X, Y + H));
+            p.Offset(new Vector(position.X, position.Y));
+
+            hitbox = p;
         }
     }
 }

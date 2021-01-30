@@ -1,7 +1,0 @@
-namespace GameTester
-{
-    class TestClass
-    {
-
-    }
-}
