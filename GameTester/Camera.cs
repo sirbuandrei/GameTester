@@ -31,7 +31,7 @@ namespace GameTester
             else if (centre.Y - viewport.Height / 2 < 0)
                 centre.Y = viewport.Height / 2;
 
-            transform = Matrix.CreateTranslation(new Vector3(-centre + new Vector2(viewport.Width / 2, viewport.Height / 2), 0.0f));
+            transform = Matrix.CreateScale(1, 1, 0) * Matrix.CreateTranslation(new Vector3(-centre + new Vector2(viewport.Width / 2, viewport.Height / 2), 0.0f));
         }
     }
 }

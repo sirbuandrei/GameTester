@@ -11,7 +11,7 @@ namespace GameTester
 {
     public class Player
     {
-        public float velocity = 2f;
+        public float velocity = 1f;
         public Vector2 position;
         Dictionary<string, Animation> animationDictionary;
         public AnimationManager animationManager;
@@ -21,10 +21,10 @@ namespace GameTester
             this.position = position;
             animationDictionary = new Dictionary<string, Animation>()
             {
-                {"WalkUp", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkingUp"), 3)},
-                {"WalkDown", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkingDown"), 3)},
-                {"WalkRight", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkingRight"), 3)},
-                {"WalkLeft", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkingLeft"), 3)},
+                {"WalkUp", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkUp"), 3)},
+                {"WalkDown", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkDown"), 3)},
+                {"WalkRight", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkRight"), 3)},
+                {"WalkLeft", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkLeft"), 3)},
             };
             animationManager = new AnimationManager(animationDictionary.First().Value);
         }

@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
-using MonoGame.Extended.ViewportAdapters;
 using System;
 
 namespace GameTester
@@ -18,14 +14,13 @@ namespace GameTester
 
         private int windowHeight = 512, windowWidth = 512;
 
-        // public TiledMap tiledMap;
-        // private TiledMapRenderer tiledMapRenderer;
-
         public KeyboardState keyboardState, previousKeyBoardState;
 
         public Player player;
 
         Camera camera;
+
+        Map map;
 
         public Game1()
         {
@@ -41,10 +36,15 @@ namespace GameTester
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
 
-            camera = new Camera(GraphicsDevice.Viewport);
-            player = new Player(new Vector2(256, 400), "Default", Content);
+            map = new Map(@"C:\Users\andre\source\repos\GameTester\GameTester\MapData\Map2.tmx", @"C:\Users\andre\source\repos\GameTester\GameTester\MapData\GrassTileset.tsx", Content);
 
+            Console.WriteLine(map.collisions.Count);
+
+            //foreach (Map.Collision collision in map.collisions)
+                //Console.WriteLine(collision.collidablePolygon.ToString());
             
+            player = new Player(new Vector2(map.startingPoint.X, map.startingPoint.Y), "Conjurer", Content);
+            camera = new Camera(GraphicsDevice.Viewport);
 
             base.Initialize();
         }
@@ -52,8 +52,6 @@ namespace GameTester
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            // tiledMap = Content.Load<TiledMap>(@"Map\FinalMap");
-            // tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, tiledMap);
             background = Content.Load<Texture2D>("background_blocks");
         }
 
@@ -63,8 +61,7 @@ namespace GameTester
             keyboardState = Keyboard.GetState();
 
             player.Update(gameTime, keyboardState);
-            // tiledMapRenderer.Update(gameTime);
-            camera.Update(player, background.Width, background.Height);
+            camera.Update(player, 35*16, 35*16);
 
             base.Update(gameTime);
         }
@@ -75,8 +72,10 @@ namespace GameTester
 
             _spriteBatch.Begin(transformMatrix: camera.transform);
 
-            _spriteBatch.Draw(background, Vector2.Zero, Color.White);
+            map.Draw(_spriteBatch);
+            //_spriteBatch.Draw(background, Vector2.Zero, Color.White);
             player.Draw(_spriteBatch);
+
 
             _spriteBatch.End();
 

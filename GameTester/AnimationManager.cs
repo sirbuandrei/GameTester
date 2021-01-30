@@ -29,14 +29,14 @@ namespace GameTester
                 return;
 
             animation = animationToPlay;
-            animation.currentFrame = 1;
+            animation.currentFrame = 0;
             timer = 0f;
         }
 
         public void Stop()
         {
             timer = 0f;
-            animation.currentFrame = 0;
+            animation.currentFrame = 1;
         }
 
         public void Update(GameTime gameTime)

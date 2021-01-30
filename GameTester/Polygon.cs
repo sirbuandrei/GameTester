@@ -4,7 +4,7 @@ using System.Text;
 using System.Drawing;
 
 
-namespace CollisionSystemTest
+namespace GameTester
 {
 
 	public class Polygon {
