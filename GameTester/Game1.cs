@@ -7,19 +7,18 @@ namespace GameTester
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
+        public GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         public Texture2D background;
 
-        private int windowHeight = 512, windowWidth = 512;
+        public static int windowHeight = 512, windowWidth = 512;
 
         public KeyboardState keyboardState, previousKeyBoardState;
-
         public Player player;
 
+        NewMap nMap;
         Camera camera;
-
         Map map;
 
         public Game1()
@@ -36,14 +35,10 @@ namespace GameTester
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
 
-            map = new Map(@"..\..\..\MapData\Map2.tmx", @"..\..\..\MapData\GrassTileset.tsx", Content);
+            nMap = NewMap.Load(@"..\..\..\MapData\Map2.1.tmx");
+            // map = new Map(@"..\..\..\MapData\Map2.tmx", @"..\..\..\MapData\GrassTileset.tsx", Content);
 
-/*            Console.WriteLine(map.collisions.Count);
-
-            foreach (Map.Collision collision in map.collisions)
-                Console.WriteLine(String.Format("{0}: ", collision.iD) + collision.collidablePolygon.ToString() + "\n\n");*/
-            
-            player = new Player(new Vector2(map.startingPoint.X, map.startingPoint.Y), "Conjurer", Content);
+            player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
             camera = new Camera(GraphicsDevice.Viewport);
 
             base.Initialize();
@@ -52,7 +47,11 @@ namespace GameTester
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            background = Content.Load<Texture2D>("background_blocks");
+            background = Content.Load<Texture2D>("background_stars");
+
+            nMap.Init(GraphicsDevice);
+
+            base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
@@ -62,7 +61,7 @@ namespace GameTester
 
             player.Update(gameTime, keyboardState);
 
-            Vector Translation = new Vector(0, 0);
+            /*Vector Translation = new Vector(0, 0);
 
             foreach(Map.Collision collision in map.collisions)
             {
@@ -72,11 +71,37 @@ namespace GameTester
                     Translation = result.MinimumTranslationVector;
             }
 
-            player.Translate(Translation);
+            player.Translate(Translation);*/
 
-            camera.Update(player, 35*16, 35*16);
+            Vector Translation = new Vector(0, 0);
+
+            foreach (Polygon p in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
+            {
+                CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(player.hitbox, p, player.velocityVector);
+
+                if (result.WillIntersect)
+                    Translation = result.MinimumTranslationVector;
+            }
+
+            player.Translate(Translation);
+            // camera.Update(player, 35*16, 35*16);
+            camera.Follow(player);
 
             base.Update(gameTime);
+        }
+
+        public void DrawLine(Vector2 p1, Vector2 p2)
+        {
+            Texture2D primal_sqaure = new Texture2D(GraphicsDevice, 5, 5);
+
+            Color[] color_data = new Color[5 * 5];
+            for (int i = 0; i < color_data.Length; i++) color_data[i] = Color.Red;
+            primal_sqaure.SetData(color_data);
+
+            float angle = (float)Math.Atan2(p1.Y - p2.Y, p1.X - p2.X);
+            float distance = Vector2.Distance(p1, p2);
+
+            _spriteBatch.Draw(primal_sqaure, new Rectangle((int)p2.X, (int)p2.Y, (int)distance, 1), null, Color.White, angle, Vector2.Zero, SpriteEffects.None, 0);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -85,21 +110,18 @@ namespace GameTester
 
             _spriteBatch.Begin(transformMatrix: camera.transform);
 
-            map.Draw(_spriteBatch);
-            //_spriteBatch.Draw(background, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(background, Vector2.Zero, Color.White);
+            nMap.Draw(_spriteBatch);
             player.Draw(_spriteBatch);
-/*
-            int W = (int) (player.hitbox.Points[1].X - player.hitbox.Points[0].X);
-            int H = (int) (player.hitbox.Points[2].Y - player.hitbox.Points[0].Y);
 
-            Texture2D rect = new Texture2D(_graphics.GraphicsDevice, W, H);
 
-            Color[] data = new Color[W * H];
-            for (int i = 0; i < data.Length; ++i) data[i] = Color.Chocolate;
-            rect.SetData(data);
+            foreach (Polygon p in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
+            {
+                for (int i = 1; i < p.Points.Count; i++)
+                    DrawLine(new Vector2(p.Points[i - 1].X, p.Points[i - 1].Y), new Vector2(p.Points[i].X, p.Points[i].Y));
+            }
 
-            _spriteBatch.Draw(rect, new Vector2(player.hitbox.Points[0].X, player.hitbox.Points[0].Y), Color.White);
-*/
+
             _spriteBatch.End();
 
             base.Draw(gameTime);

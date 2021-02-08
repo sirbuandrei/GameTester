@@ -24,7 +24,6 @@ namespace GameTester
 
         public void Play(Animation animationToPlay)
         {
-
             if (animation == animationToPlay)
                 return;
 

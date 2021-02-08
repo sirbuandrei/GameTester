@@ -19,6 +19,5 @@ namespace GameTester
             this.frameWidth = texture.Width / frameCount;
             this.speed = 0.12f;
         }
-
     }
 }

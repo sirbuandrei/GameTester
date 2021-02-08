@@ -33,5 +33,24 @@ namespace GameTester
 
             transform = Matrix.CreateScale(1, 1, 0) * Matrix.CreateTranslation(new Vector3(-centre + new Vector2(viewport.Width / 2, viewport.Height / 2), 0.0f));
         }
+
+        public void Follow(Player player)
+        {
+            float ZoomAmount = (float) 2.5;
+
+            var position = Matrix.CreateTranslation(
+                -player.position.X - (16 / 2),
+                -player.position.Y - (16 / 2),
+                0);
+
+            var offset = Matrix.CreateTranslation(
+                Game1.windowWidth / 2,
+                Game1.windowHeight / 2,
+                0);
+
+            var zoom = Matrix.CreateScale(ZoomAmount, ZoomAmount, 1);
+
+            transform = position * zoom * offset;
+        }
     }
 }

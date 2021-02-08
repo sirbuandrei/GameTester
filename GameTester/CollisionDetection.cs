@@ -15,6 +15,7 @@ namespace GameTester
 		}
 
 		// Check if polygon A is going to collide with polygon B for the given velocity
+
 		public static PolygonCollisionResult PolygonCollision(Polygon polygonA, Polygon polygonB, Vector velocity)
 		{
 			PolygonCollisionResult result = new PolygonCollisionResult();
