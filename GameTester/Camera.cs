@@ -34,17 +34,13 @@ namespace GameTester
             transform = Matrix.CreateScale(1.5f, 1.5f, 0) * Matrix.CreateTranslation(new Vector3(-centre + new Vector2(viewport.Width / 2, viewport.Height / 2), 0.0f));
         }
 
-<<<<<<< HEAD
         public void Follow(Player player, int mapW, int mapH)
-=======
-        public void Follow(Player player, int mapWidth, int mapHeight)
->>>>>>> 78933dce742089a0dcc9629d7b37362a56c7512b
         {
             float ZoomAmount = (float) 2.5;
 
             centre = player.position + new Vector2(player.animationManager.animation.frameWidth / 2, player.animationManager.animation.frameHeight / 2);
 
-            if (centre.X + (viewport.Width / 2) > mapWidth * ZoomAmount)
+            if (centre.X + (viewport.Width / 2) > mapW * ZoomAmount)
                 Console.WriteLine("dada");
             else Console.WriteLine("nunu");
                 //centre.X = mapWidth - viewport.Width / 2;

@@ -43,8 +43,7 @@ namespace GameTester
             player = new Player(nMap.playerStart, "Conjurer", Content);
             camera = new Camera(GraphicsDevice.Viewport);
             nCamera = new NewCamera(GraphicsDevice.Viewport);
-            nCamera.Limits = new Rectangle(0, 0, 560, 560);
-
+            nCamera.Limits = new Rectangle(0, 0, 35 * 32, 35 * 32);
 
             base.Initialize();
         }
@@ -92,12 +91,8 @@ namespace GameTester
             nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
                                            player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
             // camera.Update(player, 35*16, 35*16);
-<<<<<<< HEAD
-            camera.Follow(player, nMap._width, nMap._height);
-=======
             //camera.Update(player, nMap._width, nMap._height);
             //camera.Follow(player, nMap._width, nMap._height);
->>>>>>> 78933dce742089a0dcc9629d7b37362a56c7512b
 
             base.Update(gameTime);
         }
@@ -123,6 +118,14 @@ namespace GameTester
             _spriteBatch.Begin(transformMatrix: nCamera.ViewMatrix);
 
             _spriteBatch.Draw(background, Vector2.Zero, Color.White);
+            _spriteBatch.Draw(background, new Vector2(0, 512), Color.White);
+            _spriteBatch.Draw(background, new Vector2(0, 512 * 2), Color.White);
+            _spriteBatch.Draw(background, new Vector2(512, 0), Color.White);
+            _spriteBatch.Draw(background, new Vector2(512, 512), Color.White);
+            _spriteBatch.Draw(background, new Vector2(512, 512 * 2), Color.White);
+            _spriteBatch.Draw(background, new Vector2(512 * 2, 0), Color.White);
+            _spriteBatch.Draw(background, new Vector2(512 * 2, 512), Color.White);
+            _spriteBatch.Draw(background, new Vector2(512 * 2, 512 * 2), Color.White);
             nMap.Draw(_spriteBatch);
             player.Draw(_spriteBatch);
 
