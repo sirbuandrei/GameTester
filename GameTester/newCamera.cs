@@ -8,9 +8,9 @@ namespace GameTester
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework;
 
-    public class newCamera
+    public class NewCamera
     {
-        public newCamera(Viewport viewport)
+        public NewCamera(Viewport viewport)
         {
             _viewport = viewport;
         }

@@ -20,7 +20,7 @@ namespace GameTester
         NewMap nMap;
         Camera camera;
         Map map;
-        newCamera nCamera;
+        NewCamera nCamera;
 
         public Game1()
         {
@@ -41,7 +41,7 @@ namespace GameTester
 
             player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
             camera = new Camera(GraphicsDevice.Viewport);
-            nCamera = new newCamera(GraphicsDevice.Viewport);
+            nCamera = new NewCamera(GraphicsDevice.Viewport);
             nCamera.Limits = new Rectangle(0, 0, 560, 560);
 
 
