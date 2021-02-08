@@ -31,21 +31,39 @@ namespace GameTester
             else if (centre.Y - viewport.Height / 2 < 0)
                 centre.Y = viewport.Height / 2;
 
-            transform = Matrix.CreateScale(1, 1, 0) * Matrix.CreateTranslation(new Vector3(-centre + new Vector2(viewport.Width / 2, viewport.Height / 2), 0.0f));
+            transform = Matrix.CreateScale(1.5f, 1.5f, 0) * Matrix.CreateTranslation(new Vector3(-centre + new Vector2(viewport.Width / 2, viewport.Height / 2), 0.0f));
         }
 
+<<<<<<< HEAD
         public void Follow(Player player, int mapW, int mapH)
+=======
+        public void Follow(Player player, int mapWidth, int mapHeight)
+>>>>>>> 78933dce742089a0dcc9629d7b37362a56c7512b
         {
             float ZoomAmount = (float) 2.5;
 
+            centre = player.position + new Vector2(player.animationManager.animation.frameWidth / 2, player.animationManager.animation.frameHeight / 2);
+
+            if (centre.X + (viewport.Width / 2) > mapWidth * ZoomAmount)
+                Console.WriteLine("dada");
+            else Console.WriteLine("nunu");
+                //centre.X = mapWidth - viewport.Width / 2;
+            /*else if (centre.X - viewport.Width / 2 < 0)
+                centre.X = viewport.Width / 2;*/
+
+            /*if (centre.Y + viewport.Height / 2 > mapHeight)
+                centre.Y = mapHeight - viewport.Height / 2;
+            else if (centre.Y - viewport.Height / 2 < 0)
+                centre.Y = viewport.Height / 2;*/
+
             var position = Matrix.CreateTranslation(
-                -player.position.X - (16 / 2),
-                -player.position.Y - (16 / 2),
+                -centre.X,
+                -centre.Y,
                 0);
 
             var offset = Matrix.CreateTranslation(
-                Game1.windowWidth / 2,
-                Game1.windowHeight / 2,
+                viewport.Width / 2,
+                viewport.Height / 2,
                 0);
 
             var zoom = Matrix.CreateScale(ZoomAmount, ZoomAmount, 1);

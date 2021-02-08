@@ -20,6 +20,7 @@ namespace GameTester
         NewMap nMap;
         Camera camera;
         Map map;
+        NewCamera nCamera;
 
         public Game1()
         {
@@ -41,6 +42,9 @@ namespace GameTester
             //player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
             player = new Player(nMap.playerStart, "Conjurer", Content);
             camera = new Camera(GraphicsDevice.Viewport);
+            nCamera = new NewCamera(GraphicsDevice.Viewport);
+            nCamera.Limits = new Rectangle(0, 0, 560, 560);
+
 
             base.Initialize();
         }
@@ -85,8 +89,15 @@ namespace GameTester
             }
 
             player.Translate(Translation);
+            nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
+                                           player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
             // camera.Update(player, 35*16, 35*16);
+<<<<<<< HEAD
             camera.Follow(player, nMap._width, nMap._height);
+=======
+            //camera.Update(player, nMap._width, nMap._height);
+            //camera.Follow(player, nMap._width, nMap._height);
+>>>>>>> 78933dce742089a0dcc9629d7b37362a56c7512b
 
             base.Update(gameTime);
         }
@@ -109,7 +120,7 @@ namespace GameTester
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(transformMatrix: camera.transform);
+            _spriteBatch.Begin(transformMatrix: nCamera.ViewMatrix);
 
             _spriteBatch.Draw(background, Vector2.Zero, Color.White);
             nMap.Draw(_spriteBatch);
