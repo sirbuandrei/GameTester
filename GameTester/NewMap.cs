@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace GameTester
 {
@@ -13,6 +14,7 @@ namespace GameTester
         public Tileset tileset;
         public int _width, _height;
         public int _tileWidth, _tileHeight;
+        public Vector2 playerStart;
 
         private NewMap()
         {
@@ -55,6 +57,17 @@ namespace GameTester
                 map.layers.Add(layer);
             }
             // </layer>
+
+            // <start position>
+            foreach (XmlNode objectGroup in root.SelectNodes("objectgroup"))
+            {
+                if (objectGroup.Attributes["name"].InnerText.Equals("Start"))
+                {
+                    map.playerStart.X = float.Parse(objectGroup["object"].Attributes["x"].InnerText);
+                    map.playerStart.Y = float.Parse(objectGroup["object"].Attributes["y"].InnerText);
+                }
+            }
+            // </start position>
 
             return map;
         }

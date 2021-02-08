@@ -34,7 +34,7 @@ namespace GameTester
             transform = Matrix.CreateScale(1, 1, 0) * Matrix.CreateTranslation(new Vector3(-centre + new Vector2(viewport.Width / 2, viewport.Height / 2), 0.0f));
         }
 
-        public void Follow(Player player)
+        public void Follow(Player player, int mapW, int mapH)
         {
             float ZoomAmount = (float) 2.5;
 

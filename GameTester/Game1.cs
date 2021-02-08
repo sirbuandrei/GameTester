@@ -35,10 +35,11 @@ namespace GameTester
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
 
-            nMap = NewMap.Load(@"..\..\..\MapData\Map2.1.tmx");
+            nMap = NewMap.Load(@"..\..\..\MapData\Map.tmx");
             // map = new Map(@"..\..\..\MapData\Map2.tmx", @"..\..\..\MapData\GrassTileset.tsx", Content);
 
-            player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
+            //player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
+            player = new Player(nMap.playerStart, "Conjurer", Content);
             camera = new Camera(GraphicsDevice.Viewport);
 
             base.Initialize();
@@ -85,7 +86,7 @@ namespace GameTester
 
             player.Translate(Translation);
             // camera.Update(player, 35*16, 35*16);
-            camera.Follow(player);
+            camera.Follow(player, nMap._width, nMap._height);
 
             base.Update(gameTime);
         }

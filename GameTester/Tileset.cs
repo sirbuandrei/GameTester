@@ -66,8 +66,12 @@ namespace GameTester
                     tileImages[tileID]
                 );
 
-                foreach (XmlNode objectNode in tileNode["objectgroup"].SelectNodes("object"))
-                    tile.collisions.Add(GetCollision(objectNode));
+                if (tileNode["objectgroup"] != null)
+                {
+                    foreach (XmlNode objectNode in tileNode["objectgroup"].SelectNodes("object"))
+                        tile.collisions.Add(GetCollision(objectNode));
+                }
+
                 tiles[tileID] = tile;
 
                 // TODO: Check for drawOrderGuide property
