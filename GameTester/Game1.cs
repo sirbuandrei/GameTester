@@ -84,7 +84,7 @@ namespace GameTester
                 CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(player.hitbox, p, player.velocityVector);
 
                 if (result.WillIntersect)
-                    Translation = result.MinimumTranslationVector;
+                    Translation += result.MinimumTranslationVector;
             }
 
             player.Translate(Translation);
