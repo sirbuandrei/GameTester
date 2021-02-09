@@ -36,7 +36,7 @@ namespace GameTester
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
 
-            nMap = NewMap.Load(@"..\..\..\MapData\Map.tmx");
+            nMap = NewMap.Load(@"..\..\..\MapData\Map2.1.tmx");
             // map = new Map(@"..\..\..\MapData\Map2.tmx", @"..\..\..\MapData\GrassTileset.tsx", Content);
 
             //player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
