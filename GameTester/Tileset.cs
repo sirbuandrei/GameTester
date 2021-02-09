@@ -70,19 +70,18 @@ namespace GameTester
                 {
                     foreach (XmlNode objectNode in tileNode["objectgroup"].SelectNodes("object"))
                     {
-                        tile.collisions.Add(GetCollision(objectNode));
+                        Polygon collision = GetCollision(objectNode);
 
                         if (objectNode["properties"] != null)
                             foreach (XmlNode property in objectNode["properties"].SelectNodes("property"))
-                                if(property.Attributes["name"].InnerText == "drawOrderGuide" && property.Attributes["value"].InnerText == "true")
+                                if (property.Attributes["name"].InnerText == "drawOrderGuide" && property.Attributes["value"].InnerText == "true")
+                                    collision.drawOrderGuide = true;
 
+                        tile.collisions.Add(collision);
                     }
                 }
 
                 tiles[tileID] = tile;
-
-                // TODO: Check for drawOrderGuide property
-
             }
         }
 

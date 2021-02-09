@@ -11,6 +11,7 @@ namespace GameTester
     class NewMap
     {
         public List<NewLayer> layers;
+        public List<NewTile> drawOnTop;
         public Tileset tileset;
         public int _width, _height;
         public int _tileWidth, _tileHeight;

@@ -10,6 +10,7 @@ namespace GameTester
 
 		private List<Vector> points = new List<Vector>();
 		private List<Vector> edges = new List<Vector>();
+		public bool drawOrderGuide;
 
 		public void BuildEdges() {
 			Vector p1;
