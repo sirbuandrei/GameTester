@@ -14,6 +14,7 @@ namespace GameTester
         public float velocity = 1f;
         public Vector velocityVector;
         public Polygon hitbox;
+        public Polygon orderHitbox;
         public Vector2 position;
         Dictionary<string, Animation> animationDictionary;
         public AnimationManager animationManager;
@@ -83,6 +84,7 @@ namespace GameTester
         private void UpdateHitBox()
         {
             Polygon p = new Polygon();
+            Polygon q = new Polygon();
 
             float X = (float) 3.3125;
             float Y = (float) 12.25;
@@ -95,7 +97,14 @@ namespace GameTester
             p.Points.Add(new Vector(X, Y + H));
             p.Offset(new Vector(position.X, position.Y));
 
+            q.Points.Add(new Vector(0, 0));
+            q.Points.Add(new Vector(16, 0));
+            q.Points.Add(new Vector(16, 16));
+            q.Points.Add(new Vector(0, 16));
+            q.Offset(new Vector(position.X, position.Y));
+
             hitbox = p;
+            orderHitbox = q;
         }
     }
 }

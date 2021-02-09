@@ -85,6 +85,8 @@ namespace GameTester
 			foreach (Vector edge in Edges)
 				p.Edges.Add(edge);
 
+			p.drawOrderGuide = drawOrderGuide;
+
 			return p;
         }
 

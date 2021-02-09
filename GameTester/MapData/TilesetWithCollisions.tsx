@@ -121,11 +121,12 @@
   </objectgroup>
  </tile>
  <tile id="27">
-  <properties>
-   <property name="drawOrderGuide" type="bool" value="true"/>
-  </properties>
   <objectgroup draworder="index" id="2">
-   <object id="1" x="-0.545455" y="6.81818" width="17.0909" height="9.81818"/>
+   <object id="1" x="-0.545455" y="6.81818" width="17.0909" height="9.81818">
+    <properties>
+     <property name="drawOrderGuide" type="bool" value="true"/>
+    </properties>
+   </object>
    <object id="2" x="0" y="7.63636" width="16" height="8.36364"/>
   </objectgroup>
  </tile>

@@ -37,6 +37,7 @@ namespace GameTester
             _graphics.ApplyChanges();
 
             nMap = NewMap.Load(@"..\..\..\MapData\Map2.1.tmx");
+            //nMap = NewMap.Load(@"..\..\..\MapData\Map.tmx");
             // map = new Map(@"..\..\..\MapData\Map2.tmx", @"..\..\..\MapData\GrassTileset.tsx", Content);
 
             //player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
@@ -78,23 +79,38 @@ namespace GameTester
             player.Translate(Translation);*/
 
             Vector Translation = new Vector(0, 0);
+            //nMap.drawOnTop.Clear();
 
-            foreach (Polygon p in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
+            foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
             {
+                Polygon p = tup.Item1;
                 CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(player.hitbox, p, player.velocityVector);
 
                 if (result.WillIntersect)
-                {
                     if (!p.drawOrderGuide)
                         Translation += result.MinimumTranslationVector;
-                    /*else
-                        nMap.drawOnTop.Add();*/
+            }
+
+            foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
+            {
+                Polygon p = tup.Item1;
+
+                //Console.WriteLine(p.drawOrderGuide);
+                if (p.drawOrderGuide)
+                {
+                    CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(player.orderHitbox, p, player.velocityVector);
+
+                    if (result.Intersect)
+                        nMap.drawOnTop.data[(int)tup.Item2.X, (int)tup.Item2.Y] = -1;
+                    else
+                        nMap.drawOnTop.data[(int)tup.Item2.X, (int)tup.Item2.Y] = (int)tup.Item2.Z;
                 }
             }
 
             player.Translate(Translation);
             nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
                                            player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
+            
             // camera.Update(player, 35*16, 35*16);
             //camera.Update(player, nMap._width, nMap._height);
             //camera.Follow(player, nMap._width, nMap._height);
@@ -131,16 +147,18 @@ namespace GameTester
             _spriteBatch.Draw(background, new Vector2(512 * 2, 0), Color.White);
             _spriteBatch.Draw(background, new Vector2(512 * 2, 512), Color.White);
             _spriteBatch.Draw(background, new Vector2(512 * 2, 512 * 2), Color.White);
+
             nMap.Draw(_spriteBatch);
             player.Draw(_spriteBatch);
+            nMap.DrawTop(_spriteBatch);
 
-
-            foreach (Polygon p in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
+            /*foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
             {
+                Polygon p = tup.Item1;
+
                 for (int i = 1; i < p.Points.Count; i++)
                     DrawLine(new Vector2(p.Points[i - 1].X, p.Points[i - 1].Y), new Vector2(p.Points[i].X, p.Points[i].Y));
-            }
-
+            }*/
 
             _spriteBatch.End();
 

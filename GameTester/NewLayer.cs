@@ -61,5 +61,12 @@ namespace GameTester
                 }
             }
         }
+
+        public void Clear()
+        {
+            for (int i = 0; i < _height; i++)
+                for (int j = 0; j < _width; j++)
+                    data[i, j] = -1;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace GameTester
     class NewMap
     {
         public List<NewLayer> layers;
-        public List<NewTile> drawOnTop;
+        public NewLayer drawOnTop;
         public Tileset tileset;
         public int _width, _height;
         public int _tileWidth, _tileHeight;
@@ -69,6 +69,18 @@ namespace GameTester
                 }
             }
             // </start position>
+            
+            string clearCSV = "";
+            for (int i = 0; i < map._height; i++)
+            {
+                for (int j = 0; j < map._width; j++)
+                    clearCSV += "0,";
+                clearCSV += "\n";
+            }
+            clearCSV = clearCSV.Trim();
+            clearCSV = clearCSV[0..^1];
+
+            map.drawOnTop = new NewLayer("OnTop", map._width, map._height, clearCSV);
 
             return map;
         }
@@ -78,10 +90,10 @@ namespace GameTester
             tileset.Load(graphics);
         }
 
-        public List<Polygon> getNearbyPolygons(Vector pos)
+        public List<Tuple< Polygon, Vector3> > getNearbyPolygons(Vector pos)
         {
             Vector posToMap = PixelToMapCoord(pos);
-            List<Polygon> collisions = new List<Polygon>();
+            List< Tuple<Polygon, Vector3> > collisions = new List< Tuple<Polygon, Vector3> >();
             int search_area = 3;
 
             int from_X = (int) Math.Max(0, posToMap.X - search_area);
@@ -105,7 +117,7 @@ namespace GameTester
                                 p.Offset(MapCoordToPixel(new Vector(j, i)));
                                 p.BuildEdges();
 
-                                collisions.Add(p);
+                                collisions.Add(new Tuple<Polygon, Vector3>(p, new Vector3(i, j, layer.data[i, j])));
                             }
                         }
                     }
@@ -129,6 +141,11 @@ namespace GameTester
         {
             foreach (NewLayer layer in layers)
                 layer.Draw(spriteBatch, tileset);
+        }
+
+        public void DrawTop(SpriteBatch spriteBatch)
+        {
+            drawOnTop.Draw(spriteBatch, tileset);
         }
     }
 }
