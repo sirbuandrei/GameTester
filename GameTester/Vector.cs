@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.IO;
+using ProtoBuf;
 
 namespace GameTester
 {
-
+	[ProtoContract]
 	public struct Vector {
 
+		[ProtoMember(1)]
 		public float X;
+		[ProtoMember(2)]
 		public float Y;
 
 		static public Vector FromPoint(Point p) {
@@ -113,7 +117,6 @@ namespace GameTester
 				return ToString();
 			}
 		}
-
 
 	}
 

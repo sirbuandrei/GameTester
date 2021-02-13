@@ -6,14 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProtoBuf;
+using System.IO;
 
 namespace GameTester
 {
+    [ProtoContract(SkipConstructor = false)]
     public class Player
     {
         public float velocity = 1f;
+        [ProtoMember(1, DataFormat = DataFormat.Group)]
+        public Vector positionToSend;
         public Vector velocityVector;
-        public Polygon hitbox;
+        public Polygon hitbox; 
         public Polygon orderHitbox;
         public Vector2 position;
         Dictionary<string, Animation> animationDictionary;
@@ -22,6 +27,7 @@ namespace GameTester
         public Player(Vector2 position, string characterType, ContentManager Content)
         {
             this.position = position;
+            this.positionToSend = new Vector(position.X, position.Y);
             animationDictionary = new Dictionary<string, Animation>()
             {
                 {"WalkUp", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkUp"), 3)},
@@ -105,6 +111,25 @@ namespace GameTester
 
             hitbox = p;
             orderHitbox = q;
+        }
+
+        public static byte[] ProtoSerialize<T>(T record) where T : class
+        {
+            if (null == record) return null;
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    Serializer.Serialize(stream, record);
+                    return stream.ToArray();
+                }
+            }
+            catch
+            {
+                // Log error
+                throw;
+            }
         }
     }
 }

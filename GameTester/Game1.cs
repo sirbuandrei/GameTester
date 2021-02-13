@@ -2,6 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Text;
+
+/// <summary>
+/// 86.124.142.106
+/// </summary>
 
 namespace GameTester
 {
@@ -17,10 +22,15 @@ namespace GameTester
         public KeyboardState keyboardState, previousKeyBoardState;
         public Player player;
 
+        private double time = 0;
+
+        private PlayerManager playerManager;
+
         NewMap nMap;
         Camera camera;
         Map map;
         NewCamera nCamera;
+        Client client;
 
         public Game1()
         {
@@ -41,10 +51,18 @@ namespace GameTester
             // map = new Map(@"..\..\..\MapData\Map2.tmx", @"..\..\..\MapData\GrassTileset.tsx", Content);
 
             //player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
+            playerManager = new PlayerManager();
             player = new Player(nMap.playerStart, "Conjurer", Content);
             camera = new Camera(GraphicsDevice.Viewport);
             nCamera = new NewCamera(GraphicsDevice.Viewport);
-            nCamera.Limits = new Rectangle(0, 0, 35 * 32, 35 * 32);
+            Console.WriteLine(nMap.tileset._tileHeight);
+            nCamera.Limits = new Rectangle(0, 0, nMap._width * nMap.tileset._tileWidth, nMap._height * nMap.tileset._tileHeight);
+
+            //client = new Client("100.111.233.239", 5555);
+            //client.GetData();
+            //lient.SendData(addByteArrays(Encoding.ASCII.GetBytes("new_player:"),
+                                            //Player.ProtoSerialize<Player>(player)));
+            //client.SendData(Encoding.ASCII.GetBytes("!"));
 
             base.Initialize();
         }
@@ -61,6 +79,9 @@ namespace GameTester
 
         protected override void Update(GameTime gameTime)
         {
+            //client.SendData(Encoding.ASCII.GetBytes("get_players!"));
+            //client.GetData();
+
             previousKeyBoardState = keyboardState;
             keyboardState = Keyboard.GetState();
 
@@ -110,7 +131,17 @@ namespace GameTester
             player.Translate(Translation);
             nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
                                            player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
-            
+
+/*            if (gameTime.TotalGameTime.TotalSeconds - time > 3)
+            {
+                player.positionToSend = new Vector(player.position.X, player.position.Y);
+                Console.WriteLine("3 sec elapsed, new player position {0}, {1}", player.positionToSend.X, player.positionToSend.Y);
+                client.SendData(addByteArrays(Encoding.ASCII.GetBytes("update_player:"),
+                                            Player.ProtoSerialize<Player>(player)));
+                client.SendData(Encoding.ASCII.GetBytes("!"));
+                time = gameTime.TotalGameTime.TotalSeconds;
+            }*/
+
             // camera.Update(player, 35*16, 35*16);
             //camera.Update(player, nMap._width, nMap._height);
             //camera.Follow(player, nMap._width, nMap._height);
@@ -138,7 +169,7 @@ namespace GameTester
 
             _spriteBatch.Begin(transformMatrix: nCamera.ViewMatrix);
 
-            _spriteBatch.Draw(background, Vector2.Zero, Color.White);
+/*            _spriteBatch.Draw(background, Vector2.Zero, Color.White);
             _spriteBatch.Draw(background, new Vector2(0, 512), Color.White);
             _spriteBatch.Draw(background, new Vector2(0, 512 * 2), Color.White);
             _spriteBatch.Draw(background, new Vector2(512, 0), Color.White);
@@ -146,7 +177,7 @@ namespace GameTester
             _spriteBatch.Draw(background, new Vector2(512, 512 * 2), Color.White);
             _spriteBatch.Draw(background, new Vector2(512 * 2, 0), Color.White);
             _spriteBatch.Draw(background, new Vector2(512 * 2, 512), Color.White);
-            _spriteBatch.Draw(background, new Vector2(512 * 2, 512 * 2), Color.White);
+            _spriteBatch.Draw(background, new Vector2(512 * 2, 512 * 2), Color.White);*/
 
             nMap.Draw(_spriteBatch);
             player.Draw(_spriteBatch);
@@ -163,6 +194,13 @@ namespace GameTester
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+        public byte[] addByteArrays(byte[] array1, byte[] array2)
+        {
+            byte[] newArray = new byte[array1.Length + array2.Length];
+            array1.CopyTo(newArray, 0);
+            array2.CopyTo(newArray, array1.Length);
+            return newArray;
         }
     }
 }
