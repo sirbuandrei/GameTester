@@ -15,14 +15,21 @@ namespace GameTester
     public class Player
     {
         public float velocity = 1f;
+
         [ProtoMember(1, DataFormat = DataFormat.Group)]
         public Vector positionToSend;
+
+        [ProtoMember(2)]
+        public int ID;
+
         public Vector velocityVector;
         public Polygon hitbox; 
         public Polygon orderHitbox;
         public Vector2 position;
         Dictionary<string, Animation> animationDictionary;
         public AnimationManager animationManager;
+
+        public Player() { }
 
         public Player(Vector2 position, string characterType, ContentManager Content)
         {
@@ -111,25 +118,6 @@ namespace GameTester
 
             hitbox = p;
             orderHitbox = q;
-        }
-
-        public static byte[] ProtoSerialize<T>(T record) where T : class
-        {
-            if (null == record) return null;
-
-            try
-            {
-                using (var stream = new MemoryStream())
-                {
-                    Serializer.Serialize(stream, record);
-                    return stream.ToArray();
-                }
-            }
-            catch
-            {
-                // Log error
-                throw;
-            }
         }
     }
 }

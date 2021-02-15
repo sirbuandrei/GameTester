@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using ProtoBuf;
+using System.Collections.Generic;
 
 namespace GameTester
 {
@@ -22,28 +23,40 @@ namespace GameTester
         public void SendData(byte[] player)
         {
             Stream stream = client.GetStream();
+            byte[] end_byte = new byte[1];
+            end_byte[0] = (byte) '!';
+
             stream.Write(player, 0, player.Length);
+            stream.Write(end_byte, 0, 1);
         }
 
-        public void GetData()
+        public byte[] GetData()
         {
             Stream stream = client.GetStream();
 
-            Console.WriteLine(client.Available.ToString());
+            List<byte> byte_list = new List<byte>();
+            byte[] buffer = new byte[1024];
+            int index_of_33 = -1;
 
-            s
-
-/*            //byte[] buffer = new byte[2];
-
-            int bytesRead = 0;
-
-            while(bytesRead == 0)
+            while (index_of_33 == -1)
             {
-                bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                Console.WriteLine(bytesRead);
-            }
+                int bytesRead = stream.Read(buffer, 0, 1024);
 
-            Console.WriteLine(bytesRead);*/
+                foreach (byte b in buffer)
+                    byte_list.Add(b);
+                
+                index_of_33 = byte_list.IndexOf(33);
+            }
+            byte_list.RemoveAt(index_of_33);
+
+            Console.Write("byte_list = \n[ ");
+            foreach (byte b in byte_list)
+            {
+                Console.Write("{0}, ", b);
+            }
+            Console.WriteLine(" ]");
+
+            return byte_list.ToArray();
         }
     }
 }

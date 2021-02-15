@@ -9,7 +9,7 @@ namespace GameTester
     [ProtoContract]
     class PlayerManager
     {
-        [ProtoMember(1)]
+        [ProtoMember(1, OverwriteList = true)]
         public List<Player> players;
 
         public PlayerManager()
@@ -35,5 +35,12 @@ namespace GameTester
             }
         }
 
+        public void Print()
+        {
+            foreach (Player p in players)
+            {
+                Console.WriteLine("Player {0}: {1}, {2}", p.ID, p.position.X, p.position.Y);
+            }
+        }
     }
 }

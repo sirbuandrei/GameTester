@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 /// <summary>
@@ -58,11 +60,14 @@ namespace GameTester
             Console.WriteLine(nMap.tileset._tileHeight);
             nCamera.Limits = new Rectangle(0, 0, nMap._width * nMap.tileset._tileWidth, nMap._height * nMap.tileset._tileHeight);
 
-            //client = new Client("100.111.233.239", 5555);
-            //client.GetData();
-            //lient.SendData(addByteArrays(Encoding.ASCII.GetBytes("new_player:"),
-                                            //Player.ProtoSerialize<Player>(player)));
-            //client.SendData(Encoding.ASCII.GetBytes("!"));
+            client = new Client("79.114.16.172", 5555);
+            MemoryStream ms = new MemoryStream();
+            ProtoBuf.Serializer.Serialize<Player>(ms, player);
+
+            client.SendData(addByteArrays(Encoding.ASCII.GetBytes("new_player:"), ms.ToArray()));
+
+            player.ID = (Int32) BitConverter.ToInt32(client.GetData(), 0);
+            Console.WriteLine("Player ID: {0}", player.ID);
 
             base.Initialize();
         }
@@ -79,9 +84,6 @@ namespace GameTester
 
         protected override void Update(GameTime gameTime)
         {
-            //client.SendData(Encoding.ASCII.GetBytes("get_players!"));
-            //client.GetData();
-
             previousKeyBoardState = keyboardState;
             keyboardState = Keyboard.GetState();
 
@@ -132,19 +134,29 @@ namespace GameTester
             nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
                                            player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
 
-/*            if (gameTime.TotalGameTime.TotalSeconds - time > 3)
+            if (gameTime.TotalGameTime.TotalSeconds - time > 5)
             {
+                //client.SendData(Encoding.ASCII.GetBytes("get_players!"));
+                //PlayerManager pm = PlayerManager.ProtoDeserialize<PlayerManager>(client.GetData());
+
+                //PlayerManager pm = new PlayerManager();
+                //pm.players = ProtoBuf.Serializer.Deserialize<List<Player>>((ReadOnlyMemory<byte>) client.GetData());
+                //pm.Print();
+
                 player.positionToSend = new Vector(player.position.X, player.position.Y);
                 Console.WriteLine("3 sec elapsed, new player position {0}, {1}", player.positionToSend.X, player.positionToSend.Y);
-                client.SendData(addByteArrays(Encoding.ASCII.GetBytes("update_player:"),
-                                            Player.ProtoSerialize<Player>(player)));
-                client.SendData(Encoding.ASCII.GetBytes("!"));
+
+                MemoryStream ms = new MemoryStream();
+                ProtoBuf.Serializer.Serialize<Player>(ms, player);
+
+                client.SendData(addByteArrays(Encoding.ASCII.GetBytes("update_player:"), ms.ToArray()));
+                
                 time = gameTime.TotalGameTime.TotalSeconds;
-            }*/
+            }
 
             // camera.Update(player, 35*16, 35*16);
-            //camera.Update(player, nMap._width, nMap._height);
-            //camera.Follow(player, nMap._width, nMap._height);
+            // camera.Update(player, nMap._width, nMap._height);
+            // camera.Follow(player, nMap._width, nMap._height);
 
             base.Update(gameTime);
         }
@@ -195,6 +207,7 @@ namespace GameTester
 
             base.Draw(gameTime);
         }
+
         public byte[] addByteArrays(byte[] array1, byte[] array2)
         {
             byte[] newArray = new byte[array1.Length + array2.Length];
