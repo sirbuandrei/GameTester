@@ -134,28 +134,19 @@ namespace GameTester
             nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
                                            player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
 
-            if (gameTime.TotalGameTime.TotalSeconds - time > 5)
-            {
-                /// UPDATE PLAYERS
-                player.positionToSend = new Vector(player.position.X, player.position.Y);
-                Console.WriteLine("3 sec elapsed, new player position {0}, {1}", player.positionToSend.X, player.positionToSend.Y);
 
-                client.UpdatePlayer(player.toPlayerManager());
+            /// UPDATE PLAYERS
+            player.positionToSend = new Vector(player.position.X, player.position.Y);
+            client.UpdatePlayer(player.toPlayerManager());
 
-                /// GET PLAYERS
-                client.SendData(Encoding.ASCII.GetBytes("get_players!"));
+            /// GET PLAYERS
+            client.SendData(Encoding.ASCII.GetBytes("get_players!"));
 
-                List<PlayerManager> pmList = new List<PlayerManager>();
-                string data = Encoding.ASCII.GetString(client.GetData());
+            List<PlayerManager> pmList = new List<PlayerManager>();
+            string data = Encoding.ASCII.GetString(client.GetData());
 
-                if(data.Length != 0)
-                    pmList = JsonSerializer.Deserialize<List<PlayerManager>>(data);
-
-                foreach (PlayerManager pManager in pmList)
-                    Console.WriteLine(pManager.ToString());
-                
-                time = gameTime.TotalGameTime.TotalSeconds;
-            }
+            if(data.Length != 0)
+                pmList = JsonSerializer.Deserialize<List<PlayerManager>>(data);
 
             // camera.Update(player, 35*16, 35*16);
             // camera.Update(player, nMap._width, nMap._height);

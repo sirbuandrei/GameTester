@@ -51,13 +51,6 @@ namespace GameTester
             }
             byte_list.RemoveRange(index_of_33, byte_list.Count - index_of_33);
 
-            Console.Write("byte_list = \n[ ");
-            foreach (byte b in byte_list)
-            {
-                Console.Write("{0}, ", b);
-            }
-            Console.WriteLine(" ]");
-
             return byte_list.ToArray();
         }
 
