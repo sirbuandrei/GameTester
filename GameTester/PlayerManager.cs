@@ -6,41 +6,21 @@ using ProtoBuf;
 
 namespace GameTester
 {
-    [ProtoContract]
-    class PlayerManager
+    [Serializable]
+    public class PlayerManager
     {
-        [ProtoMember(1, OverwriteList = true)]
-        public List<Player> players;
+        public float X { get; set; }
+        public float Y { get; set; }
+        public int ID { get; set; }
 
         public PlayerManager()
         {
-            this.players = new List<Player>();
+            ID = 0;
         }
 
-        public static T ProtoDeserialize<T>(byte[] data) where T : class
+        override public string ToString()
         {
-            if (null == data) return null;
-
-            try
-            {
-                using (var stream = new MemoryStream(data))
-                {
-                    return Serializer.Deserialize<T>(stream);
-                }
-            }
-            catch
-            {
-                // Log error
-                throw;
-            }
-        }
-
-        public void Print()
-        {
-            foreach (Player p in players)
-            {
-                Console.WriteLine("Player {0}: {1}, {2}", p.ID, p.position.X, p.position.Y);
-            }
+            return String.Format("X: {0}, Y: {1}, ID: {2}", X, Y, ID);
         }
     }
 }

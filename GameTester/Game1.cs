@@ -4,7 +4,10 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 /// <summary>
 /// 86.124.142.106
@@ -61,10 +64,7 @@ namespace GameTester
             nCamera.Limits = new Rectangle(0, 0, nMap._width * nMap.tileset._tileWidth, nMap._height * nMap.tileset._tileHeight);
 
             client = new Client("79.114.16.172", 5555);
-            MemoryStream ms = new MemoryStream();
-            ProtoBuf.Serializer.Serialize<Player>(ms, player);
-
-            client.SendData(addByteArrays(Encoding.ASCII.GetBytes("new_player:"), ms.ToArray()));
+            client.SendPlayer(player.toPlayerManager());
 
             player.ID = (Int32) BitConverter.ToInt32(client.GetData(), 0);
             Console.WriteLine("Player ID: {0}", player.ID);
@@ -136,20 +136,23 @@ namespace GameTester
 
             if (gameTime.TotalGameTime.TotalSeconds - time > 5)
             {
-                //client.SendData(Encoding.ASCII.GetBytes("get_players!"));
-                //PlayerManager pm = PlayerManager.ProtoDeserialize<PlayerManager>(client.GetData());
-
-                //PlayerManager pm = new PlayerManager();
-                //pm.players = ProtoBuf.Serializer.Deserialize<List<Player>>((ReadOnlyMemory<byte>) client.GetData());
-                //pm.Print();
-
+                /// UPDATE PLAYERS
                 player.positionToSend = new Vector(player.position.X, player.position.Y);
                 Console.WriteLine("3 sec elapsed, new player position {0}, {1}", player.positionToSend.X, player.positionToSend.Y);
 
-                MemoryStream ms = new MemoryStream();
-                ProtoBuf.Serializer.Serialize<Player>(ms, player);
+                client.UpdatePlayer(player.toPlayerManager());
 
-                client.SendData(addByteArrays(Encoding.ASCII.GetBytes("update_player:"), ms.ToArray()));
+                /// GET PLAYERS
+                client.SendData(Encoding.ASCII.GetBytes("get_players!"));
+
+                List<PlayerManager> pmList = new List<PlayerManager>();
+                string data = Encoding.ASCII.GetString(client.GetData());
+
+                if(data.Length != 0)
+                    pmList = JsonSerializer.Deserialize<List<PlayerManager>>(data);
+
+                foreach (PlayerManager pManager in pmList)
+                    Console.WriteLine(pManager.ToString());
                 
                 time = gameTime.TotalGameTime.TotalSeconds;
             }

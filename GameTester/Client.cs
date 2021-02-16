@@ -7,6 +7,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using ProtoBuf;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GameTester
 {
@@ -47,7 +49,7 @@ namespace GameTester
                 
                 index_of_33 = byte_list.IndexOf(33);
             }
-            byte_list.RemoveAt(index_of_33);
+            byte_list.RemoveRange(index_of_33, byte_list.Count - index_of_33);
 
             Console.Write("byte_list = \n[ ");
             foreach (byte b in byte_list)
@@ -57,6 +59,24 @@ namespace GameTester
             Console.WriteLine(" ]");
 
             return byte_list.ToArray();
+        }
+
+        public void SendPlayer(PlayerManager pm)
+        {
+            Stream stream = client.GetStream();
+            string jsonString = "new_player:" + JsonSerializer.Serialize(pm) + "!";
+            
+            Console.WriteLine(jsonString);
+
+            stream.Write(Encoding.ASCII.GetBytes(jsonString), 0, jsonString.Length);
+        }
+
+        public void UpdatePlayer(PlayerManager pm)
+        {
+            Stream stream = client.GetStream();
+            string jsonString = "update_player:" + JsonSerializer.Serialize(pm) + "!";
+
+            stream.Write(Encoding.ASCII.GetBytes(jsonString), 0, jsonString.Length);
         }
     }
 }

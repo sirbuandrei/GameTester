@@ -4,22 +4,18 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ProtoBuf;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GameTester
 {
-    [ProtoContract(SkipConstructor = false)]
     public class Player
     {
         public float velocity = 1f;
 
-        [ProtoMember(1, DataFormat = DataFormat.Group)]
         public Vector positionToSend;
-
-        [ProtoMember(2)]
         public int ID;
 
         public Vector velocityVector;
@@ -118,6 +114,17 @@ namespace GameTester
 
             hitbox = p;
             orderHitbox = q;
+        }
+
+        public PlayerManager toPlayerManager()
+        {
+            PlayerManager pm = new PlayerManager();
+
+            pm.X = position.X;
+            pm.Y = position.Y;
+            pm.ID = ID;
+
+            return pm;
         }
     }
 }
