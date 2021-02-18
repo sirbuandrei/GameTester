@@ -8,10 +8,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-/// <summary>
-/// 86.124.142.106
-/// </summary>
+using GPNetworkClient;
+using GPNetworkMessage;
 
 namespace GameTester
 {
@@ -35,7 +33,7 @@ namespace GameTester
         Camera camera;
         Map map;
         NewCamera nCamera;
-        Client client;
+        UDPClient client;
 
         public Game1()
         {
@@ -63,11 +61,13 @@ namespace GameTester
             Console.WriteLine(nMap.tileset._tileHeight);
             nCamera.Limits = new Rectangle(0, 0, nMap._width * nMap.tileset._tileWidth, nMap._height * nMap.tileset._tileHeight);
 
-            client = new Client("79.114.16.172", 5555);
-            client.SendPlayer(player.toPlayerManager());
+            client = new UDPClient();
+            client.Connect("79.114.16.172", 5555, "new player");
 
-            player.ID = (Int32) BitConverter.ToInt32(client.GetData(), 0);
-            Console.WriteLine("Player ID: {0}", player.ID);
+            client.SendMessage(MessageType.ANY, player.toPlayerManager());
+
+            //player.ID = (Int32) BitConverter.ToInt32(client.GetData(), 0);
+            //Console.WriteLine("Player ID: {0}", player.ID);
 
             base.Initialize();
         }
@@ -137,16 +137,17 @@ namespace GameTester
 
             /// UPDATE PLAYERS
             player.positionToSend = new Vector(player.position.X, player.position.Y);
-            client.UpdatePlayer(player.toPlayerManager());
+            client.SendMessage(MessageType.ANY, player.toPlayerManager());
 
-            /// GET PLAYERS
-            client.SendData(Encoding.ASCII.GetBytes("get_players!"));
+            string message;
 
-            List<PlayerManager> pmList = new List<PlayerManager>();
-            string data = Encoding.ASCII.GetString(client.GetData());
-
-            if(data.Length != 0)
-                pmList = JsonSerializer.Deserialize<List<PlayerManager>>(data);
+            while (client.Messages.Count != 0)
+            {
+                message = client.Messages.Dequeue().Message;
+                
+                PlayerManager pm = JsonSerializer.Deserialize<PlayerManager>(message);
+                Console.WriteLine(pm.ID);
+            }
 
             // camera.Update(player, 35*16, 35*16);
             // camera.Update(player, nMap._width, nMap._height);

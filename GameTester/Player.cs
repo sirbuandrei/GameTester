@@ -116,7 +116,7 @@ namespace GameTester
             orderHitbox = q;
         }
 
-        public PlayerManager toPlayerManager()
+        public string toPlayerManager()
         {
             PlayerManager pm = new PlayerManager();
 
@@ -124,7 +124,9 @@ namespace GameTester
             pm.Y = position.Y;
             pm.ID = ID;
 
-            return pm;
+            string jsonString = JsonSerializer.Serialize(pm);
+
+            return jsonString;
         }
     }
 }
