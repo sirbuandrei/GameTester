@@ -67,13 +67,10 @@ namespace GameTester
                 // Exit();
             }
 
-            client.SendMessage(MessageType.ANY, player.toPlayerInfo());
             player.ID = client.ClientID;
+            client.SendMessageExceptOne(player.toPlayerInfo(), player.ID);
 
             allPlayers.Add(player.ID, player);
-
-            Thread.Sleep(100);
-            client.Messages.Dequeue();
 
             base.Initialize();
         }
@@ -98,10 +95,6 @@ namespace GameTester
             Vector Translation = new Vector(0, 0);
             //nMap.drawOnTop.Clear();
 
-            player.Translate(Translation);
-            nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
-                                           player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
-
             foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
             {
                 Polygon p = tup.Item1;
@@ -111,6 +104,10 @@ namespace GameTester
                     if (!p.drawOrderGuide)
                         Translation += result.MinimumTranslationVector;
             }
+
+            player.Translate(Translation);
+            nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
+                                           player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
 
             /// UPDATE PLAYERS
             player.positionToSend = new Vector(player.position.X, player.position.Y);
@@ -128,7 +125,13 @@ namespace GameTester
 
                     allPlayers[info.ID] = Player.fromInfo(info, Content);
                 }
-                catch (Exception e) { ; }
+                catch (Exception e) 
+                {
+                    string[] type_value = message.Split(" ");
+
+                    if (type_value[0].Equals("disconnected"))
+                        allPlayers.Remove(int.Parse(type_value[1]));
+                }
             }
 
             foreach (Player o_player in allPlayers.Values)

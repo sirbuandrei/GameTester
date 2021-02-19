@@ -18,7 +18,7 @@ namespace GameTester
         public Vector positionToSend;
         public int ID;
         public string walkingDirection = "WalkUp";
-        public string nickname = "DauMuie";
+        public string nickname = "Martalog";
 
         public Vector velocityVector;
         public Polygon hitbox; 

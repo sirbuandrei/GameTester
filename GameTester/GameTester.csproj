@@ -36,10 +36,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Client">
-      <HintPath>..\..\GPNetwork\Client\bin\Debug\Client.dll</HintPath>
+      <HintPath>..\..\..\..\Github\GPNetwork-master\Client\bin\Debug\Client.dll</HintPath>
     </Reference>
     <Reference Include="Message">
-      <HintPath>..\..\GPNetwork\Client\bin\Debug\Message.dll</HintPath>
+      <HintPath>..\..\..\..\Github\GPNetwork-master\Client\bin\Debug\Message.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
