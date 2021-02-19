@@ -85,6 +85,12 @@ namespace GameTester
             base.LoadContent();
         }
 
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            client.SendMessage(MessageType.LEAVE, "disconnected " + client.ClientID);
+            base.OnExiting(sender, args);
+        }
+
         protected override void Update(GameTime gameTime)
         {
             previousKeyBoardState = keyboardState;
