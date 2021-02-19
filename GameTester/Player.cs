@@ -18,11 +18,13 @@ namespace GameTester
         public Vector positionToSend;
         public int ID;
         public string walkingDirection = "WalkUp";
+        public string nickname = "DauMuie";
 
         public Vector velocityVector;
         public Polygon hitbox; 
         public Polygon orderHitbox;
         public Vector2 position;
+        private SpriteFont font;
         Dictionary<string, Animation> animationDictionary;
         public AnimationManager animationManager;
 
@@ -32,6 +34,7 @@ namespace GameTester
         {
             this.position = position;
             this.positionToSend = new Vector(position.X, position.Y);
+            font = Content.Load<SpriteFont>("nicknameFont");
             animationDictionary = new Dictionary<string, Animation>()
             {
                 {"WalkUp", new Animation(Content.Load<Texture2D>(@"Player\" + characterType + @"\WalkUp"), 3)},
@@ -82,6 +85,8 @@ namespace GameTester
         {
             animationManager.animation.texture = animationDictionary[walkingDirection].texture;
             animationManager.Draw(spriteBatch, position);
+            spriteBatch.DrawString(font, nickname, new Vector2(position.X + animationManager.animation.frameWidth / 2 - font.MeasureString(nickname).X / 2,
+                                                           position.Y - font.MeasureString(nickname).Y), Color.Black);
         }
 
         public void Translate(Vector t)

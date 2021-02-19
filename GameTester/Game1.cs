@@ -173,11 +173,8 @@ namespace GameTester
             _spriteBatch.Begin(transformMatrix: nCamera.ViewMatrix);
 
             nMap.Draw(_spriteBatch);
-            //player.Draw(_spriteBatch);
-
             foreach (Player p in allPlayers.Values)
                 p.Draw(_spriteBatch);
-
             nMap.DrawTop(_spriteBatch);
 
             _spriteBatch.End();
