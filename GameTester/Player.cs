@@ -17,6 +17,7 @@ namespace GameTester
 
         public Vector positionToSend;
         public int ID;
+        public string walkingDirection = "WalkUp";
 
         public Vector velocityVector;
         public Polygon hitbox; 
@@ -47,22 +48,22 @@ namespace GameTester
         {
             if (keyboardState.IsKeyDown(Keys.W))
             {
-                animationManager.Play(animationDictionary["WalkUp"]);
+                walkingDirection = "WalkUp";
                 position.Y -= velocity;
             }
             else if (keyboardState.IsKeyDown(Keys.S))
             {
-                animationManager.Play(animationDictionary["WalkDown"]);
+                walkingDirection = "WalkDown";
                 position.Y += velocity;
             }
             else if (keyboardState.IsKeyDown(Keys.A))
             {
-                animationManager.Play(animationDictionary["WalkLeft"]);
+                walkingDirection = "WalkLeft";
                 position.X -= velocity;
             }
             else if (keyboardState.IsKeyDown(Keys.D))
             {
-                animationManager.Play(animationDictionary["WalkRight"]);
+                walkingDirection = "WalkRight";
                 position.X += velocity;
             }
             else
@@ -79,6 +80,7 @@ namespace GameTester
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            animationManager.animation.texture = animationDictionary[walkingDirection].texture;
             animationManager.Draw(spriteBatch, position);
         }
 
@@ -123,6 +125,8 @@ namespace GameTester
             info.positionToSend = new Vector(position.X, position.Y);
             info.velocityVector = velocityVector;
             info.ID = ID;
+            info.walkingDirection = walkingDirection;
+            info.currentFrame = animationManager.animation.currentFrame;
 
             return JsonSerializer.Serialize(info);
         }
@@ -133,6 +137,9 @@ namespace GameTester
 
             p.ID = info.ID;
             p.velocityVector = info.velocityVector;
+            p.animationManager.animation.currentFrame = info.currentFrame;
+            p.walkingDirection = info.walkingDirection;
+
 
             return p;
         }
