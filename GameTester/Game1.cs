@@ -67,13 +67,13 @@ namespace GameTester
                 // Exit();
             }
 
-            client.SendMessage(MessageType.ANY, player.toPlayerInfo());
             player.ID = client.ClientID;
+            client.SendMessageExceptOne(player.toPlayerInfo(), player.ID);
 
             allPlayers.Add(player.ID, player);
 
-            Thread.Sleep(100);
-            client.Messages.Dequeue();
+            //Thread.Sleep(100);
+            //client.Messages.Dequeue();
 
             base.Initialize();
         }
@@ -86,6 +86,12 @@ namespace GameTester
             nMap.Init(GraphicsDevice);
 
             base.LoadContent();
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            client.SendMessage(MessageType.LEAVE, "disconnected " + client.ClientID);
+            base.OnExiting(sender, args);
         }
 
         protected override void Update(GameTime gameTime)
