@@ -23,16 +23,13 @@ namespace GameTester
         public static int windowHeight = 512, windowWidth = 512;
 
         public KeyboardState keyboardState, previousKeyBoardState;
+        
         public Player player;
-
-        private double time = 0;
-
-        private PlayerManager playerManager;
+        private Dictionary<int, Player> allPlayers;
 
         NewMap nMap;
-        Camera camera;
-        Map map;
         NewCamera nCamera;
+
         UDPClient client;
 
         public Game1()
@@ -53,21 +50,26 @@ namespace GameTester
             //nMap = NewMap.Load(@"..\..\..\MapData\Map.tmx");
             // map = new Map(@"..\..\..\MapData\Map2.tmx", @"..\..\..\MapData\GrassTileset.tsx", Content);
 
-            //player = new Player(new Vector2(16 * 8, 16 * 19), "Conjurer", Content);
-            playerManager = new PlayerManager();
+            allPlayers = new Dictionary<int, Player>();
             player = new Player(nMap.playerStart, "Conjurer", Content);
-            camera = new Camera(GraphicsDevice.Viewport);
+
+            //camera = new Camera(GraphicsDevice.Viewport);
+            
             nCamera = new NewCamera(GraphicsDevice.Viewport);
-            Console.WriteLine(nMap.tileset._tileHeight);
             nCamera.Limits = new Rectangle(0, 0, nMap._width * nMap.tileset._tileWidth, nMap._height * nMap.tileset._tileHeight);
 
             client = new UDPClient();
-            client.Connect("79.114.16.172", 5555, "new player");
+            if (!client.Connect("79.114.16.172", 5555))
+            {
+                Console.WriteLine("Cannot connect to server!");
 
-            client.SendMessage(MessageType.ANY, player.toPlayerManager());
+                // Exit();
+            }
 
-            //player.ID = (Int32) BitConverter.ToInt32(client.GetData(), 0);
-            //Console.WriteLine("Player ID: {0}", player.ID);
+            client.SendMessage(MessageType.ANY, player.toPlayerInfo());
+            player.ID = client.ClientID;
+
+            allPlayers.Add(player.ID, player);
 
             base.Initialize();
         }
@@ -89,18 +91,6 @@ namespace GameTester
 
             player.Update(gameTime, keyboardState);
 
-            /*Vector Translation = new Vector(0, 0);
-
-            foreach(Map.Collision collision in map.collisions)
-            {
-                CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(player.hitbox, collision.collidablePolygon, player.velocityVector);
-
-                if (result.WillIntersect)
-                    Translation = result.MinimumTranslationVector;
-            }
-
-            player.Translate(Translation);*/
-
             Vector Translation = new Vector(0, 0);
             //nMap.drawOnTop.Clear();
 
@@ -118,7 +108,6 @@ namespace GameTester
             {
                 Polygon p = tup.Item1;
 
-                //Console.WriteLine(p.drawOrderGuide);
                 if (p.drawOrderGuide)
                 {
                     CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(player.orderHitbox, p, player.velocityVector);
@@ -137,21 +126,22 @@ namespace GameTester
 
             /// UPDATE PLAYERS
             player.positionToSend = new Vector(player.position.X, player.position.Y);
-            client.SendMessage(MessageType.ANY, player.toPlayerManager());
+            client.SendMessage(MessageType.ANY, player.toPlayerInfo());
 
             string message;
 
             while (client.Messages.Count != 0)
             {
                 message = client.Messages.Dequeue().Message;
-                
-                PlayerManager pm = JsonSerializer.Deserialize<PlayerManager>(message);
-                Console.WriteLine(pm.ID);
-            }
 
-            // camera.Update(player, 35*16, 35*16);
-            // camera.Update(player, nMap._width, nMap._height);
-            // camera.Follow(player, nMap._width, nMap._height);
+                try
+                {
+                    PlayerInfo info = JsonSerializer.Deserialize<PlayerInfo>(message);
+
+                    allPlayers[info.ID] = Player.fromInfo(info, Content);
+                }
+                catch (Exception e) { ; }
+            }
 
             base.Update(gameTime);
         }
@@ -176,39 +166,17 @@ namespace GameTester
 
             _spriteBatch.Begin(transformMatrix: nCamera.ViewMatrix);
 
-/*            _spriteBatch.Draw(background, Vector2.Zero, Color.White);
-            _spriteBatch.Draw(background, new Vector2(0, 512), Color.White);
-            _spriteBatch.Draw(background, new Vector2(0, 512 * 2), Color.White);
-            _spriteBatch.Draw(background, new Vector2(512, 0), Color.White);
-            _spriteBatch.Draw(background, new Vector2(512, 512), Color.White);
-            _spriteBatch.Draw(background, new Vector2(512, 512 * 2), Color.White);
-            _spriteBatch.Draw(background, new Vector2(512 * 2, 0), Color.White);
-            _spriteBatch.Draw(background, new Vector2(512 * 2, 512), Color.White);
-            _spriteBatch.Draw(background, new Vector2(512 * 2, 512 * 2), Color.White);*/
-
             nMap.Draw(_spriteBatch);
-            player.Draw(_spriteBatch);
+            //player.Draw(_spriteBatch);
+
+            foreach (Player p in allPlayers.Values)
+                p.Draw(_spriteBatch);
+
             nMap.DrawTop(_spriteBatch);
-
-            /*foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
-            {
-                Polygon p = tup.Item1;
-
-                for (int i = 1; i < p.Points.Count; i++)
-                    DrawLine(new Vector2(p.Points[i - 1].X, p.Points[i - 1].Y), new Vector2(p.Points[i].X, p.Points[i].Y));
-            }*/
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        public byte[] addByteArrays(byte[] array1, byte[] array2)
-        {
-            byte[] newArray = new byte[array1.Length + array2.Length];
-            array1.CopyTo(newArray, 0);
-            array2.CopyTo(newArray, array1.Length);
-            return newArray;
         }
     }
 }

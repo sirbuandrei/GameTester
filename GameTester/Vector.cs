@@ -9,8 +9,8 @@ namespace GameTester
 {
 	public struct Vector {
 
-		public float X;
-		public float Y;
+		public float X { get; set; }
+		public float Y { get; set; }
 
 		static public Vector FromPoint(Point p) {
 			return Vector.FromPoint(p.X, p.Y);

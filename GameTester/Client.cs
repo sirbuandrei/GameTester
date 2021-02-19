@@ -54,7 +54,7 @@ namespace GameTester
             return byte_list.ToArray();
         }
 
-        public void SendPlayer(PlayerManager pm)
+        public void SendPlayer(PlayerInfo pm)
         {
             Stream stream = client.GetStream();
             string jsonString = "new_player:" + JsonSerializer.Serialize(pm) + "!";
@@ -64,7 +64,7 @@ namespace GameTester
             stream.Write(Encoding.ASCII.GetBytes(jsonString), 0, jsonString.Length);
         }
 
-        public void UpdatePlayer(PlayerManager pm)
+        public void UpdatePlayer(PlayerInfo pm)
         {
             Stream stream = client.GetStream();
             string jsonString = "update_player:" + JsonSerializer.Serialize(pm) + "!";

@@ -116,17 +116,25 @@ namespace GameTester
             orderHitbox = q;
         }
 
-        public string toPlayerManager()
+        public string toPlayerInfo()
         {
-            PlayerManager pm = new PlayerManager();
+            PlayerInfo info = new PlayerInfo();
 
-            pm.X = position.X;
-            pm.Y = position.Y;
-            pm.ID = ID;
+            info.positionToSend = new Vector(position.X, position.Y);
+            info.velocityVector = velocityVector;
+            info.ID = ID;
 
-            string jsonString = JsonSerializer.Serialize(pm);
+            return JsonSerializer.Serialize(info);
+        }
 
-            return jsonString;
+        public static Player fromInfo(PlayerInfo info, ContentManager content)
+        {
+            Player p = new Player(new Vector2(info.positionToSend.X, info.positionToSend.Y), "Conjurer", content);
+
+            p.ID = info.ID;
+            p.velocityVector = info.velocityVector;
+
+            return p;
         }
     }
 }
