@@ -14,6 +14,7 @@ namespace GameTester
         public Vector velocityVector { get; set; }
         public string walkingDirection { get; set; }
         public int currentFrame { get; set; }
+        public string nickname { get; set; }
 
         // Dictionary<string, Animation> animationDictionary;
         // public AnimationManager animationManager;

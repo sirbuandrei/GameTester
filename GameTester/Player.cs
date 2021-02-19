@@ -132,6 +132,7 @@ namespace GameTester
             info.ID = ID;
             info.walkingDirection = walkingDirection;
             info.currentFrame = animationManager.animation.currentFrame;
+            info.nickname = nickname;
 
             return JsonSerializer.Serialize(info);
         }
@@ -144,6 +145,7 @@ namespace GameTester
             p.velocityVector = info.velocityVector;
             p.animationManager.animation.currentFrame = info.currentFrame;
             p.walkingDirection = info.walkingDirection;
+            p.nickname = info.nickname;
 
 
             return p;
