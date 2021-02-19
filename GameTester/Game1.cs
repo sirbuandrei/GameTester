@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using GPNetworkClient;
 using GPNetworkMessage;
+using System.Threading;
 
 namespace GameTester
 {
@@ -71,6 +72,9 @@ namespace GameTester
 
             allPlayers.Add(player.ID, player);
 
+            Thread.Sleep(100);
+            client.Messages.Dequeue();
+
             base.Initialize();
         }
 
@@ -94,6 +98,10 @@ namespace GameTester
             Vector Translation = new Vector(0, 0);
             //nMap.drawOnTop.Clear();
 
+            player.Translate(Translation);
+            nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
+                                           player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
+
             foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
             {
                 Polygon p = tup.Item1;
@@ -103,26 +111,6 @@ namespace GameTester
                     if (!p.drawOrderGuide)
                         Translation += result.MinimumTranslationVector;
             }
-
-            foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(player.position.X, player.position.Y)))
-            {
-                Polygon p = tup.Item1;
-
-                if (p.drawOrderGuide)
-                {
-                    CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(player.orderHitbox, p, player.velocityVector);
-
-                    if (result.Intersect)
-                        nMap.drawOnTop.data[(int)tup.Item2.X, (int)tup.Item2.Y] = -1;
-                    else
-                        nMap.drawOnTop.data[(int)tup.Item2.X, (int)tup.Item2.Y] = (int)tup.Item2.Z;
-                }
-            }
-
-            player.Translate(Translation);
-            nCamera.Position = new Vector2(player.position.X - (GraphicsDevice.Viewport.Width / 2 / nCamera.Zoom),
-                                           player.position.Y - (GraphicsDevice.Viewport.Height / 2 / nCamera.Zoom));
-
 
             /// UPDATE PLAYERS
             player.positionToSend = new Vector(player.position.X, player.position.Y);
@@ -141,6 +129,24 @@ namespace GameTester
                     allPlayers[info.ID] = Player.fromInfo(info, Content);
                 }
                 catch (Exception e) { ; }
+            }
+
+            foreach (Player o_player in allPlayers.Values)
+            {
+                foreach (Tuple<Polygon, Vector3> tup in nMap.getNearbyPolygons(new Vector(o_player.position.X, o_player.position.Y)))
+                {
+                    Polygon p = tup.Item1;
+
+                    if (p.drawOrderGuide)
+                    {
+                        CollisionDetection.PolygonCollisionResult result = CollisionDetection.PolygonCollision(o_player.orderHitbox, p, o_player.velocityVector);
+
+                        if (result.Intersect)
+                            nMap.drawOnTop.data[(int)tup.Item2.X, (int)tup.Item2.Y] = -1;
+                        else
+                            nMap.drawOnTop.data[(int)tup.Item2.X, (int)tup.Item2.Y] = (int)tup.Item2.Z;
+                    }
+                }
             }
 
             base.Update(gameTime);
